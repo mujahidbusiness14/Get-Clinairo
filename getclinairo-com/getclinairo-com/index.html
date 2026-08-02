@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stop Losing Patients to Voicemail | Clinairo AI Front Desk</title>
+<meta name="description" content="Every missed call is a patient who calls the next clinic instead. Clinairo answers instantly, 24/7, and recovers the bookings you're currently losing to voicemail.">
+<link rel="canonical" href="https://getclinairo.com/">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<style>
+:root {
+  --navy: #0A1420; --navy-2: #0F1D30; --navy-3: #142238;
+  --white: #F7F9FC; --muted: #93A1B8;
+  --accent: #3E9DFF; --accent-dim: rgba(62,157,255,0.15);
+  --green: #34D399; --green-dim: rgba(52,211,153,0.14);
+  --red: #F87171; --red-dim: rgba(248,113,113,0.14);
+  --border: rgba(255,255,255,0.08);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; overflow-x: hidden; max-width: 100%; }
+body { background: var(--navy); color: var(--white); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, sans-serif; overflow-x: hidden; }
+a { color: inherit; }
+.section { max-width: 1100px; margin: 0 auto; padding: 80px 40px; }
+.eyebrow { color: var(--green); font-size: 13px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 16px; }
+h2 { font-size: 34px; font-weight: 700; letter-spacing: -0.8px; margin-bottom: 16px; }
+.section-sub { color: var(--muted); font-size: 16px; max-width: 560px; margin-bottom: 40px; line-height: 1.6; }
+.center { text-align: center; margin-left: auto; margin-right: auto; }
+
+/* ---- Minimal header ---- */
+header { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 18px 40px; background: rgba(10,20,32,0.85); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); }
+.logo { font-size: 24px; font-weight: 700; letter-spacing: -0.5px; text-decoration: none; color: var(--white); }
+nav { display: flex; gap: 24px; align-items: center; }
+nav a.how-it-works { color: var(--muted); text-decoration: none; font-size: 14px; font-weight: 500; }
+nav a.how-it-works:hover { color: var(--white); }
+.cta-btn { background: var(--accent); color: #fff; border: none; padding: 10px 22px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease; white-space: nowrap; display: inline-block; text-decoration: none; text-align: center; }
+.cta-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(62,157,255,0.3); }
+.cta-btn.green { background: var(--green); }
+.cta-btn.lg { padding: 14px 30px; font-size: 15px; }
+@media (max-width: 560px) { nav a.how-it-works { display: none; } }
+
+/* ---- Hero ---- */
+.hero { max-width: 800px; margin: 0 auto; padding: 90px 40px 70px; text-align: center; }
+.hero .eyebrow { justify-content: center; display: flex; }
+.hero h1 { font-size: 46px; font-weight: 700; letter-spacing: -1px; line-height: 1.15; margin-bottom: 20px; }
+.hero p { color: var(--muted); font-size: 17px; line-height: 1.6; max-width: 620px; margin: 0 auto 34px; }
+.hero-cta-row { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+.secondary-link { font-size: 14px; text-decoration: underline; text-underline-offset: 4px; opacity: 0.75; align-self: center; }
+
+/* ---- Audit calculator (identical logic to main site) ---- */
+.audit-card { max-width: 840px; margin: 0 auto; background: var(--navy-3); border: 1px solid var(--border); border-radius: 22px; padding: 40px; position: relative; }
+.audit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.audit-field label { display: block; font-size: 12.5px; color: var(--muted); margin-bottom: 8px; font-weight: 600; }
+.audit-field input {
+  width: 100%; background: var(--navy-2); border: 1px solid var(--border); border-radius: 10px;
+  padding: 12px 14px; color: var(--white); font-size: 15px; font-weight: 600; font-family: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.audit-field input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(62,157,255,0.15); }
+.audit-results { max-height: 0; overflow: hidden; opacity: 0; transition: max-height 0.6s ease, opacity 0.5s ease; margin-top: 0; }
+.audit-results.show { max-height: 900px; opacity: 1; margin-top: 34px; }
+.audit-results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; padding-top: 30px; border-top: 1px solid var(--border); }
+.audit-stat { background: var(--navy-2); border: 1px solid var(--border); border-radius: 14px; padding: 20px; text-align: center; }
+.audit-stat.featured { border-color: var(--red); background: rgba(248,113,113,0.06); }
+.audit-stat-label { font-size: 12px; color: var(--muted); font-weight: 600; margin-bottom: 8px; }
+.audit-stat-val { font-size: 22px; font-weight: 800; color: var(--white); }
+.audit-stat-val.red { color: var(--red); }
+.audit-stat-val.big { font-size: 28px; }
+.audit-cta-row { display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; margin-top: 26px; background: rgba(52,211,153,0.06); border: 1px solid rgba(52,211,153,0.3); border-radius: 14px; padding: 20px 24px; }
+.audit-cta-row p { font-size: 14px; color: var(--white); max-width: 420px; line-height: 1.5; }
+.audit-disclaimer { font-size: 12px; color: var(--muted); margin-top: 14px; text-align: center; }
+
+/* ---- Proof section ---- */
+.proof-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.proof-card { background: var(--navy-3); border: 1px solid var(--border); border-radius: 16px; padding: 28px 22px; text-align: center; opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease; }
+.proof-card.in-view { opacity: 1; transform: translateY(0); }
+.proof-num { font-size: 34px; font-weight: 800; color: var(--green); margin-bottom: 6px; }
+.proof-label { font-size: 13px; color: var(--muted); font-weight: 500; }
+.proof-source { text-align: center; color: var(--muted); font-size: 13px; margin-top: 24px; }
+.proof-source a { color: var(--accent); text-decoration: none; }
+.proof-source a:hover { text-decoration: underline; }
+
+/* ---- Final CTA ---- */
+.final-cta-inner { max-width: 700px; margin: 0 auto; text-align: center; background: linear-gradient(160deg, rgba(62,157,255,0.1), var(--navy-3)); border: 1px solid var(--accent); border-radius: 22px; padding: 50px 40px; }
+.final-cta-inner h2 { margin-bottom: 12px; }
+.final-cta-inner p { color: var(--muted); font-size: 15px; margin-bottom: 26px; }
+
+/* ---- Footer ---- */
+.landing-footer { border-top: 1px solid var(--border); background: var(--navy-2); padding: 50px 40px; }
+.footer-inner { max-width: 1100px; margin: 0 auto; text-align: center; }
+.footer-inner .logo { display: inline-block; margin-bottom: 8px; }
+.footer-tagline { color: var(--muted); font-size: 13.5px; margin-bottom: 22px; }
+.footer-links { display: flex; justify-content: center; gap: 22px; flex-wrap: wrap; margin-bottom: 18px; }
+.footer-links a { color: var(--muted); font-size: 13px; text-decoration: none; }
+.footer-links a:hover { color: var(--accent); }
+.footer-contact { color: var(--muted); font-size: 13px; margin-bottom: 14px; }
+.footer-contact a { color: var(--accent); text-decoration: none; }
+.footer-copy { color: var(--muted); font-size: 12px; opacity: 0.7; }
+
+@media (max-width: 900px) {
+  .hero h1 { font-size: 32px; }
+  .audit-grid { grid-template-columns: 1fr; }
+  .audit-results-grid { grid-template-columns: 1fr; }
+  .audit-cta-row { flex-direction: column; text-align: center; }
+  .proof-grid { grid-template-columns: 1fr; }
+  h2 { font-size: 26px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <a href="/" class="logo">Clinairo</a>
+  <nav>
+    <a href="#calculator" class="how-it-works">ROI Calculator</a>
+    <a href="#book" class="cta-btn">Book Free Consultation</a>
+  </nav>
+</header>
+
+<div class="hero">
+  <div class="eyebrow">Missed Call Recovery</div>
+  <h1>Stop Losing Patients to Voicemail</h1>
+  <p>Every call that goes to voicemail is a patient calling the next clinic on their list. Clinairo answers instantly — day, night, and weekends — so that call turns into a booked appointment instead of a lost patient.</p>
+  <div class="hero-cta-row">
+    <a href="#calculator" class="cta-btn lg">See How Many Patients You're Losing</a>
+    <a href="#book" class="secondary-link">Book Free Consultation</a>
+  </div>
+</div>
+
+
+<section class="section" id="calculator">
+  <div class="eyebrow center">Free Revenue Audit</div>
+  <h2 class="center">Check Your Monthly Revenue Loss</h2>
+  <p class="section-sub center" style="margin-left:auto;margin-right:auto;text-align:center;">Answer 5 quick questions about your clinic's call volume. We'll estimate what missed calls and after-hours gaps are actually costing you.</p>
+
+  <div class="audit-card">
+    <div class="audit-grid">
+      <div class="audit-field">
+        <label>Average patient calls per week</label>
+        <input type="number" id="auCalls" value="140" min="0">
+      </div>
+      <div class="audit-field">
+        <label>% of calls that go unanswered</label>
+        <input type="number" id="auMissedPct" value="20" min="0" max="100">
+      </div>
+      <div class="audit-field">
+        <label>After-hours calls per week (evenings/weekends)</label>
+        <input type="number" id="auAfterHours" value="15" min="0">
+      </div>
+      <div class="audit-field">
+        <label>Average appointment value ($)</label>
+        <input type="number" id="auApptValue" value="150" min="0">
+      </div>
+      <div class="audit-field">
+        <label>Est. booking rate for answered calls (%)</label>
+        <input type="number" id="auConvRate" value="35" min="0" max="100">
+      </div>
+    </div>
+    <button class="cta-btn submit-btn" id="auditBtn" style="max-width:340px;margin:26px auto 0;display:block;">Calculate My Revenue Loss</button>
+
+    <div class="audit-results" id="auditResults">
+      <div class="audit-results-grid">
+        <div class="audit-stat">
+          <div class="audit-stat-label">Lost Bookings / Month</div>
+          <div class="audit-stat-val" id="auOutBookings">0</div>
+        </div>
+        <div class="audit-stat">
+          <div class="audit-stat-label">Monthly Revenue Loss</div>
+          <div class="audit-stat-val red" id="auOutMonthly">$0</div>
+        </div>
+        <div class="audit-stat featured">
+          <div class="audit-stat-label">Annual Revenue Loss</div>
+          <div class="audit-stat-val red big" id="auOutAnnual">$0</div>
+        </div>
+      </div>
+      <div class="audit-cta-row">
+        <p>Clinairo recovers most of this by answering every call, day or night, and instantly following up on anything missed.</p>
+        <a href="#book" class="cta-btn green">Book Free Consultation</a>
+      </div>
+      <p class="audit-disclaimer">Estimate based on the figures you entered above — actual results vary by clinic, call patterns, and market.</p>
+    </div>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="eyebrow center">Real Results, Not a Mockup</div>
+  <h2 class="center">What This Looks Like in an Actual Clinic</h2>
+  <p class="section-sub center" style="margin-left:auto;margin-right:auto;text-align:center;">Dr. Abubakar Siddique, a neurologist, has run Clinairo's AI Front Desk in his own practice for four months.</p>
+  <div class="proof-grid">
+    <div class="proof-card"><div class="proof-num">31</div><div class="proof-label">AI-Booked Appointments / Month</div></div>
+    <div class="proof-card"><div class="proof-num">23</div><div class="proof-label">Missed Calls Recovered / Month</div></div>
+    <div class="proof-card"><div class="proof-num">6 hrs</div><div class="proof-label">Staff Time Saved / Week</div></div>
+  </div>
+  <p class="proof-source">Real, verified case study — <a href="https://www.clinairo.com/case-studies.html">read the full story on clinairo.com →</a></p>
+</section>
+
+
+<section class="section" id="book" style="padding-bottom:0;">
+  <div class="eyebrow center">Book Directly</div>
+  <h2 class="center">Pick a Time That Works</h2>
+  <p class="section-sub center" style="margin-left:auto;margin-right:auto;text-align:center;">Grab a 30-minute slot directly on our calendar — no back-and-forth required.</p>
+  <div class="calendly-inline-widget" data-url="https://calendly.com/contact-clinairo/30min?month=2026-08&background_color=142238&text_color=f7f9fc&primary_color=3e9dff" style="min-width:320px;height:700px;max-width:900px;margin:0 auto;"></div>
+  <p class="center" style="margin-top:16px;"><a href="https://calendly.com/contact-clinairo/30min?month=2026-08" target="_blank" rel="noopener" style="color:var(--muted);font-size:13px;text-decoration:underline;">Calendar not loading? Open it directly →</a></p>
+</section>
+<script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js" async></script>
+
+
+<section class="section">
+  <div class="final-cta-inner">
+    <h2>Ready to See This in Your Clinic?</h2>
+    <p>Book a free consultation and we'll walk you through exactly how it works for your practice.</p>
+    <a href="#book" class="cta-btn green lg">Book a Free Consultation</a>
+  </div>
+</section>
+
+
+<footer class="landing-footer">
+  <div class="footer-inner">
+    <a href="https://www.clinairo.com" class="logo">Clinairo</a>
+    <p class="footer-tagline">AI Front Desk automation for private clinics — answering every call, 24/7.</p>
+    <div class="footer-links">
+      <a href="https://www.clinairo.com/privacy-policy.html">Privacy Policy</a>
+      <a href="https://www.clinairo.com/terms.html">Terms & Conditions</a>
+      <a href="https://www.clinairo.com">Main Site</a>
+    </div>
+    <div class="footer-contact">Questions? <a href="mailto:contact@clinairo.com">contact@clinairo.com</a></div>
+    <div class="footer-copy">&copy; 2026 Clinairo Automation Inc. All rights reserved.</div>
+  </div>
+</footer>
+
+
+<script>
+const auditBtn = document.getElementById('auditBtn');
+if (auditBtn) {
+  auditBtn.addEventListener('click', () => {
+    const calls = parseFloat(document.getElementById('auCalls').value) || 0;
+    const missedPct = parseFloat(document.getElementById('auMissedPct').value) || 0;
+    const afterHours = parseFloat(document.getElementById('auAfterHours').value) || 0;
+    const apptValue = parseFloat(document.getElementById('auApptValue').value) || 0;
+    const convRate = parseFloat(document.getElementById('auConvRate').value) || 0;
+
+    const missedCallsPerWeek = calls * (missedPct / 100);
+    const unhandledPerWeek = missedCallsPerWeek + afterHours;
+    const lostBookingsPerWeek = unhandledPerWeek * (convRate / 100);
+    const lostBookingsPerMonth = lostBookingsPerWeek * 4.33;
+    const monthlyLoss = lostBookingsPerMonth * apptValue;
+    const annualLoss = monthlyLoss * 12;
+
+    animateAuditNumber('auOutBookings', Math.round(lostBookingsPerMonth), '', '');
+    animateAuditNumber('auOutMonthly', Math.round(monthlyLoss), '$', '');
+    animateAuditNumber('auOutAnnual', Math.round(annualLoss), '$', '');
+
+    document.getElementById('auditResults').classList.add('show');
+
+    document.dispatchEvent(new CustomEvent('clinairo:auditCalculated', {
+      detail: {
+        weeklyCalls: calls,
+        missedPct: missedPct,
+        afterHoursCalls: afterHours,
+        apptValue: apptValue,
+        convRate: convRate,
+        lostBookingsPerMonth: Math.round(lostBookingsPerMonth),
+        monthlyLoss: Math.round(monthlyLoss),
+        annualLoss: Math.round(annualLoss),
+        source: 'getclinairo'
+      }
+    }));
+  });
+}
+
+function animateAuditNumber(id, end, prefix, suffix) {
+  const el = document.getElementById(id);
+  const startTime = performance.now();
+  const duration = 1000;
+  function tick(now) {
+    const progress = Math.min((now - startTime) / duration, 1);
+    const val = Math.floor(progress * end);
+    el.textContent = prefix + val.toLocaleString() + suffix;
+    if (progress < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in-view'); });
+}, { threshold: 0.2 });
+document.querySelectorAll('.proof-card').forEach(el => revealObserver.observe(el));
+</script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  projectId: "encouraging-trilogy-3mln4",
+  appId: "1:230726986369:web:007fd166f60dbad846bb80",
+  apiKey: "AIzaSyBxciRbRM8KdodljcRR1fcvhlGjw_ssmHo",
+  authDomain: "encouraging-trilogy-3mln4.firebaseapp.com",
+  storageBucket: "encouraging-trilogy-3mln4.firebasestorage.app",
+  messagingSenderId: "230726986369"
+};
+const FIRESTORE_DATABASE_ID = "ai-studio-8e82f9d4-c284-4d8d-b0ab-f35167edd79d";
+
+const firebaseApp = initializeApp(firebaseConfig);
+const db = getFirestore(firebaseApp, FIRESTORE_DATABASE_ID);
+
+document.addEventListener('clinairo:auditCalculated', async (e) => {
+  try {
+    await addDoc(collection(db, 'audit_submissions'), {
+      ...e.detail,
+      submittedAt: serverTimestamp()
+    });
+  } catch (err) {
+    console.error('Audit log error:', err);
+  }
+});
+</script>
+
+</body>
+</html>
