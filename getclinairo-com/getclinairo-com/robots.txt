@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://getclinairo.com/sitemap.xml
